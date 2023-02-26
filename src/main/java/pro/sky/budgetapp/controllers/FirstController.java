@@ -12,7 +12,7 @@ public class FirstController {
     }
 
     @GetMapping("path/to/page")
-    public String page(@RequestParam String page){
+    public String page(@RequestParam int page){
         return "Hello, new bright PAGE! " + page;
     }
 
