@@ -15,5 +15,9 @@ public class FirstController {
     public String page(@RequestParam int page){
         return "Hello, new bright PAGE! " + page;
     }
+    @GetMapping("path/to/page2")
+    public String page2(@RequestParam int page){
+        return "Hello, new bright PAGE! " + page + "вторая";
+    }
 
 }
