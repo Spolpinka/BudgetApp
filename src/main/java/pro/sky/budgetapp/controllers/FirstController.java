@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FirstController {
     @GetMapping
     public String helloWorld(){
-        return "Hello, new bright Web!";
+        return "Hello, new bright BudgetApp!";
     }
 
     @GetMapping("path/to/page")
