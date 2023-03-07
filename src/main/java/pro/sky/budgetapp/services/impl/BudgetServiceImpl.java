@@ -41,6 +41,7 @@ public class BudgetServiceImpl implements BudgetService {
         Map<Long, Transaction> monthTransactions = transactions.getOrDefault(LocalDate.now().getMonth(),
                 new LinkedHashMap<>());
         monthTransactions.put(lastId, transaction);
+        transactions.put(LocalDate.now().getMonth(), monthTransactions);
         return lastId++;
     }
 
