@@ -25,14 +25,5 @@ public class BudgetController {
         return budgetService.getBalance();
     }
 
-    @GetMapping("/vacation/bonus")
-    public int getVacationBonus(@RequestParam int days){
-        return budgetService.getVacationBonus(days);
-    }
 
-    @GetMapping("/vacation/monthSalary")
-    public int getSalaryWithVacation(@RequestParam int vacDays,@RequestParam int vacWorkingDays,
-                                     @RequestParam int monthWorkingDays) {
-        return budgetService.getSalaryWithVacation(vacDays, vacWorkingDays, monthWorkingDays);
-    }
 }
