@@ -31,19 +31,20 @@ public class BudgetServiceImpl implements BudgetService {
     public int getBalance() {
         return SALARY - SAVINGS - getAllSpends();
     }
-
-    public void addTransaction(Transaction transaction) {
+    @Override
+    public long addTransaction(Transaction transaction) {
         Map<Long, Transaction> monthTransactions = transactions.getOrDefault(LocalDate.now().getMonth(),
                 new LinkedHashMap<>());
-        monthTransactions.put(lastId++, transaction);
+        monthTransactions.put(lastId, transaction);
+        return lastId++;
     }
-
+    @Override
     public int getDailyBalance() {
         return (DAILY_BUDGET * LocalDate.now().getDayOfMonth() - getAllSpends());
 
     }
-
-    private int getAllSpends(){
+    @Override
+    public int getAllSpends(){
         Map<Long, Transaction> monthTransactions = transactions.getOrDefault(LocalDate.now().getMonth(),
                 new LinkedHashMap<>());
         int summ = 0;
