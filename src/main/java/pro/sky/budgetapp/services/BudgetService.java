@@ -16,4 +16,6 @@ public interface BudgetService {
     int getVacationBonus(int daysCount);
 
     int getSalaryWithVacation(int vacationDays, int vacationWorkingDays, int monthWorkingDays);
+
+    Transaction getTransactionById(long id);
 }

@@ -6,7 +6,10 @@ import pro.sky.budgetapp.services.BudgetService;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Service
 public class BudgetServiceImpl implements BudgetService {
@@ -22,6 +25,7 @@ public class BudgetServiceImpl implements BudgetService {
     public static final double AVG_DAYS = 29.3;
     private static Map<Month, Map<Long, Transaction>> transactions = new TreeMap<>();
     private static long lastId = 0;
+
     @Override
     public int getDailyBudget() {
         return DAILY_BUDGET;
@@ -31,6 +35,7 @@ public class BudgetServiceImpl implements BudgetService {
     public int getBalance() {
         return SALARY - SAVINGS - getAllSpends();
     }
+
     @Override
     public long addTransaction(Transaction transaction) {
         Map<Long, Transaction> monthTransactions = transactions.getOrDefault(LocalDate.now().getMonth(),
@@ -38,13 +43,28 @@ public class BudgetServiceImpl implements BudgetService {
         monthTransactions.put(lastId, transaction);
         return lastId++;
     }
+
+    @Override
+    public Transaction getTransactionById(long id) {
+        for (Map<Long, Transaction> transactionMap : transactions.values()) {
+            if (transactionMap.containsKey(id)){
+                Transaction transaction = transactionMap.get(id);
+                if (transaction != null) {
+                    return transaction;
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     public int getDailyBalance() {
         return (DAILY_BUDGET * LocalDate.now().getDayOfMonth() - getAllSpends());
 
     }
+
     @Override
-    public int getAllSpends(){
+    public int getAllSpends() {
         Map<Long, Transaction> monthTransactions = transactions.getOrDefault(LocalDate.now().getMonth(),
                 new LinkedHashMap<>());
         int summ = 0;
@@ -53,13 +73,17 @@ public class BudgetServiceImpl implements BudgetService {
         }
         return summ;
     }
+
     @Override
     public int getVacationBonus(int daysCount) {
         double avgDaySalary = (AVG_SALARY) / AVG_DAYS;
         return (int) (daysCount * avgDaySalary);
     }
-@Override
+
+    @Override
     public int getSalaryWithVacation(int vacationDays, int vacationWorkingDays, int monthWorkingDays) {
         return getVacationBonus(vacationDays) + ((monthWorkingDays - vacationWorkingDays) * SALARY / monthWorkingDays);
     }
+
+
 }
