@@ -30,4 +30,29 @@ public class TransactionController {
             return ResponseEntity.ok(transaction);
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Transaction> editTransaction(@PathVariable long id, @RequestBody Transaction transaction) {
+        Transaction transactionById = budgetService.editTransaction(id, transaction);
+        if (transactionById == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(transactionById);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteTransaction(@PathVariable long id) {
+        if (budgetService.deleteTransaction(id)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAllTransactions() {
+        budgetService.deleteAllTransactions();
+        return ResponseEntity.ok().build();
+    }
+
 }

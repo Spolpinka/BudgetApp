@@ -44,6 +44,16 @@ public class BudgetServiceImpl implements BudgetService {
         transactions.put(LocalDate.now().getMonth(), monthTransactions);
         return lastId++;
     }
+    @Override
+    public Transaction editTransaction(long id, Transaction transaction) {
+        for (Map<Long, Transaction> transactionMap : transactions.values()){
+            if (transactionMap.containsKey(id)) {
+                transactionMap.put(id, transaction);
+                return transaction;
+            }
+        }
+        return null;
+    }
 
     @Override
     public Transaction getTransactionById(long id) {
@@ -56,6 +66,22 @@ public class BudgetServiceImpl implements BudgetService {
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean deleteTransaction(long id) {
+        for (Map<Long, Transaction> transactionMap : transactions.values()){
+            if (transactionMap.containsKey(id)) {
+                transactionMap.remove(id);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void deleteAllTransactions() {
+        transactions = new TreeMap<>();
     }
 
     @Override

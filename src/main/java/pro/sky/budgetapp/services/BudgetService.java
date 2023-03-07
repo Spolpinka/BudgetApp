@@ -9,6 +9,10 @@ public interface BudgetService {
 
     long addTransaction(Transaction transaction);
 
+    boolean deleteTransaction(long id);
+
+    void deleteAllTransactions();
+
     int getDailyBalance();
 
     int getAllSpends();
@@ -16,6 +20,8 @@ public interface BudgetService {
     int getVacationBonus(int daysCount);
 
     int getSalaryWithVacation(int vacationDays, int vacationWorkingDays, int monthWorkingDays);
+
+    Transaction editTransaction(long id, Transaction transaction);
 
     Transaction getTransactionById(long id);
 }
