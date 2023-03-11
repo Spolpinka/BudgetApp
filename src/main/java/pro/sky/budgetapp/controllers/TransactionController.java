@@ -64,6 +64,11 @@ public class TransactionController {
                             name = "month",
                             description = "месяц из соответствующего Enum",
                             example = "December"
+                    ),
+                    @Parameter(
+                            name = "category",
+                            description = "категория трат: FOOD, DRINKS, CLOTHES, TRANSPORT, HOBBY, FUN, ERROR",
+                            example = "FOOD"
                     )
             }
     )
