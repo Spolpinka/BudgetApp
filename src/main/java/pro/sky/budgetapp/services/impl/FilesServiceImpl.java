@@ -13,14 +13,14 @@ public class FilesServiceImpl implements FilesService {
     @Value("${path.to.data.file}")
     private String dataFilePath;
 
-    private Path dataPath = Path.of(dataFilePath);
-
     @Value("${name.of.data.file}")
     private String dataFileName;
 
+    @Override
     public boolean saveToFile(String json) {
         try {
-            Files.writeString(dataPath, json);
+            cleanDataFile();
+            Files.writeString(Path.of(dataFilePath, dataFileName), json);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -28,9 +28,10 @@ public class FilesServiceImpl implements FilesService {
         }
     }
 
+    @Override
     public String readFromFile() {
         try {
-            return Files.readString(dataPath);
+            return Files.readString(Path.of(dataFilePath, dataFileName));
         } catch (IOException e) {
             e.printStackTrace();
             return e.toString();
@@ -39,8 +40,9 @@ public class FilesServiceImpl implements FilesService {
 
     private boolean cleanDataFile() {
         try {
-            Files.deleteIfExists(dataPath);
-            Files.createFile(Path.of(dataPath.toUri()));
+            Path path = Path.of(dataFilePath, dataFileName);
+            Files.deleteIfExists(path);
+            Files.createFile(path);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
