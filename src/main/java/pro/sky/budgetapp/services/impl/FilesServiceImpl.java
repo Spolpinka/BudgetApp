@@ -19,7 +19,11 @@ public class FilesServiceImpl implements FilesService {
     @Override
     public boolean saveToFile(String json) {
         try {
-            cleanDataFile();
+            if (cleanDataFile()) {
+                System.out.println("норм файл очистился");
+            } else {
+                System.out.println("Проблема с очищением файла записи");
+            }
             Files.writeString(Path.of(dataFilePath, dataFileName), json);
             return true;
         } catch (IOException e) {
