@@ -9,6 +9,11 @@ import pro.sky.budgetapp.services.BudgetService;
 import pro.sky.budgetapp.services.FilesService;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
@@ -34,6 +39,7 @@ public class BudgetServiceImpl implements BudgetService {
     public BudgetServiceImpl(FilesService filesService) {
         this.filesService = filesService;
     }
+
     @PostConstruct
     void init() {
         readFromFile();
@@ -127,6 +133,21 @@ public class BudgetServiceImpl implements BudgetService {
     @Override
     public int getSalaryWithVacation(int vacationDays, int vacationWorkingDays, int monthWorkingDays) {
         return getVacationBonus(vacationDays) + ((monthWorkingDays - vacationWorkingDays) * SALARY / monthWorkingDays);
+    }
+
+    @Override
+    public Path createMonthlyReport(Month month) throws IOException {
+        LinkedHashMap<Long, Transaction> montlyTransactions = transactions.getOrDefault(month, new LinkedHashMap<>());
+        Path path = filesService.createTempFile("monthlyReport");
+        for (Transaction transaction : montlyTransactions.values()) {
+            try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
+                writer.append(transaction.getCategory() + ": "
+                                + transaction.getSumm() + "руб.    -    "
+                                + transaction.getComment())
+                        .append("\n");
+            }
+        }
+        return path;
     }
 
     private void saveToFile() {

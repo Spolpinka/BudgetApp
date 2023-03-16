@@ -2,6 +2,10 @@ package pro.sky.budgetapp.services;
 
 import pro.sky.budgetapp.model.Transaction;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.time.Month;
+
 public interface BudgetService {
     int getDailyBudget();
 
@@ -24,4 +28,6 @@ public interface BudgetService {
     Transaction editTransaction(long id, Transaction transaction);
 
     Transaction getTransactionById(long id);
+
+    Path createMonthlyReport(Month month) throws IOException;
 }

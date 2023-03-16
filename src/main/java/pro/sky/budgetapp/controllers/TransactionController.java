@@ -9,12 +9,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.budgetapp.model.Category;
 import pro.sky.budgetapp.model.Transaction;
 import pro.sky.budgetapp.services.BudgetService;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Month;
 
 @RestController
@@ -34,14 +41,27 @@ public class TransactionController {
         return ResponseEntity.ok().body(id);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Transaction> getTransactionByMonth(@PathVariable long id) {
-        Transaction transaction = budgetService.getTransactionById(id);
-        if (transaction == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(transaction);
+    @GetMapping("/byMonth/{month}")
+    public ResponseEntity<Object> getTransactionByMonth(@PathVariable Month month) {
+        try {
+            Path path = budgetService.createMonthlyReport(month);
+            if (Files.size(path) == 0) {
+                return ResponseEntity.noContent().build();
+            }
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(path.toFile()));
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + month + "-report.txt\"")
+                    .contentLength(Files.size(path))
+                    .body(resource);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.toString());
         }
+
+
     }
 
     @PutMapping("/{id}")
@@ -72,12 +92,12 @@ public class TransactionController {
                     )
             }
     )
-    @ApiResponses (value = {
+    @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
                     description = "Транзакции найдены",
                     content = {
-                            @Content (
+                            @Content(
                                     mediaType = "application/json",
                                     array = @ArraySchema(schema = @Schema(implementation = Transaction.class))
                             )
@@ -85,8 +105,8 @@ public class TransactionController {
             )
     }
     )
-    public ResponseEntity<Transaction> getAllTransactions(@RequestParam (required = false) Month month,
-                                                          @RequestBody (required = false)Category category) {
+    public ResponseEntity<Transaction> getAllTransactions(@RequestParam(required = false) Month month,
+                                                          @RequestBody(required = false) Category category) {
         return null;
     }
 

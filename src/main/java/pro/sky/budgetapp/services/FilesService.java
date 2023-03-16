@@ -3,6 +3,7 @@ package pro.sky.budgetapp.services;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.nio.file.Path;
 
 @Service
 public interface FilesService {
@@ -13,4 +14,6 @@ public interface FilesService {
     File getDataFile();
 
     boolean cleanDataFile();
+
+    Path createTempFile(String suffix);
 }
