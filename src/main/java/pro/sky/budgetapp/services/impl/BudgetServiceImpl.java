@@ -141,7 +141,7 @@ public class BudgetServiceImpl implements BudgetService {
         Path path = filesService.createTempFile("monthlyReport");
         for (Transaction transaction : montlyTransactions.values()) {
             try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
-                writer.append(transaction.getCategory() + ": "
+                writer.append(transaction.getCategory().getText() + ": "
                                 + transaction.getSumm() + "руб.    -    "
                                 + transaction.getComment())
                         .append("\n");
