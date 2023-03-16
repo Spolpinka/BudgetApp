@@ -11,4 +11,6 @@ public interface FilesService {
     String readFromFile();
 
     File getDataFile();
+
+    boolean cleanDataFile();
 }
