@@ -137,9 +137,9 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public Path createMonthlyReport(Month month) throws IOException {
-        LinkedHashMap<Long, Transaction> montlyTransactions = transactions.getOrDefault(month, new LinkedHashMap<>());
+        LinkedHashMap<Long, Transaction> monthlyTransactions = transactions.getOrDefault(month, new LinkedHashMap<>());
         Path path = filesService.createTempFile("monthlyReport");
-        for (Transaction transaction : montlyTransactions.values()) {
+        for (Transaction transaction : monthlyTransactions.values()) {
             try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
                 writer.append(transaction.getCategory().getText() + ": "
                                 + transaction.getSumm() + "руб.    -    "
