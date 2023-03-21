@@ -3,14 +3,15 @@ package pro.sky.budgetapp.services.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import pro.sky.budgetapp.model.Category;
 import pro.sky.budgetapp.model.Transaction;
 import pro.sky.budgetapp.services.BudgetService;
 import pro.sky.budgetapp.services.FilesService;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -166,6 +167,18 @@ public class BudgetServiceImpl implements BudgetService {
                     });
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void addTransactionsFromInputStream(InputStream inputStream) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] array = StringUtils.split(line, '|');
+                Transaction transaction = new Transaction(Integer.valueOf(array[1]), Category.valueOf(array[0]), array[2]);
+                addTransaction(transaction);
+            }
         }
     }
 }
