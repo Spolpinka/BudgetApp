@@ -10,6 +10,8 @@ import pro.sky.budgetapp.services.FilesService;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class FilesServiceImpl implements FilesService {
@@ -27,6 +29,8 @@ public class FilesServiceImpl implements FilesService {
             } else {
                 System.out.println("Проблема с очищением файла записи");
             }
+
+
             Files.writeString(Path.of(dataFilePath, dataFileName), json);
             return true;
         } catch (IOException e) {

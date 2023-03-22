@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Transaction {
-    @Schema(description = "сумма траты")
-    private int summ;
     @Schema(description = "категория из Enum")
     private Category category;
+    @Schema(description = "сумма траты")
+    private int sum;
     @Schema(description = "комментарий, что именно куплено")
     private String comment;
 

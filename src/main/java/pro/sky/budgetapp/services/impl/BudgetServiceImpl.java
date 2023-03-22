@@ -3,6 +3,9 @@ package pro.sky.budgetapp.services.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import pro.sky.budgetapp.model.Category;
@@ -17,10 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 @Service
 public class BudgetServiceImpl implements BudgetService {
@@ -43,7 +43,11 @@ public class BudgetServiceImpl implements BudgetService {
 
     @PostConstruct
     void init() {
-        readFromFile();
+        try {
+            readFromFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -120,7 +124,7 @@ public class BudgetServiceImpl implements BudgetService {
                 new LinkedHashMap<>());
         int summ = 0;
         for (Transaction transaction : monthTransactions.values()) {
-            summ += transaction.getSumm();
+            summ += transaction.getSum();
         }
         return summ;
     }
@@ -142,8 +146,8 @@ public class BudgetServiceImpl implements BudgetService {
         Path path = filesService.createTempFile("monthlyReport");
         for (Transaction transaction : monthlyTransactions.values()) {
             try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
-                writer.append(transaction.getCategory().getText() + ": "
-                                + transaction.getSumm() + "руб.    -    "
+                writer.append(transaction.getCategory().getText() + "|"
+                                + transaction.getSum() + "|"
                                 + transaction.getComment())
                         .append("\n");
             }
@@ -153,7 +157,8 @@ public class BudgetServiceImpl implements BudgetService {
 
     private void saveToFile() {
         try {
-            String s = new ObjectMapper().writeValueAsString(transactions);
+            DataFile dataFile = new DataFile(lastId, transactions);
+            String s = new ObjectMapper().writeValueAsString(dataFile);
             filesService.saveToFile(s);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -162,9 +167,14 @@ public class BudgetServiceImpl implements BudgetService {
 
     private void readFromFile() {
         try {
-            transactions = new ObjectMapper().readValue(filesService.readFromFile(),
-                    new TypeReference<TreeMap<Month, LinkedHashMap<Long, Transaction>>>() {
+            String json = filesService.readFromFile();
+            DataFile dataFile = new ObjectMapper().readValue(filesService.readFromFile(),
+                    new TypeReference<DataFile>() {
                     });
+            lastId = dataFile.lastId;
+            transactions = dataFile.transactions;
+
+
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -176,9 +186,17 @@ public class BudgetServiceImpl implements BudgetService {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] array = StringUtils.split(line, '|');
-                Transaction transaction = new Transaction(Integer.valueOf(array[1]), Category.valueOf(array[0]), array[2]);
+                Transaction transaction = new Transaction(Category.getCategoryByText(array[0]), Integer.parseInt(array[1]), array[2]);
                 addTransaction(transaction);
             }
         }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class DataFile {
+        private long lastId;
+        private Map<Month, LinkedHashMap<Long, Transaction>> transactions;
     }
 }

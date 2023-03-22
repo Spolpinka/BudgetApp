@@ -18,4 +18,14 @@ public enum Category {
     public String getText() {
         return text;
     }
+
+    public static Category getCategoryByText(String text) {
+        for (Category cat :
+                Category.values()) {
+            if (cat.text.equals(text)) {
+                return cat;
+            }
+        }
+        return null;
+    }
 }

@@ -43,6 +43,10 @@ public class TransactionController {
         return ResponseEntity.ok().body(id);
     }
 
+    @Operation(
+            summary = "Импорт транзакций из файла в базу",
+            description = "импорт транзакций из файла txt в базу, разделитель '|' "
+    )
     @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Object> addTransactionsFromInputStream(@RequestParam MultipartFile file) {
         try (InputStream stream = file.getInputStream()){
@@ -54,6 +58,11 @@ public class TransactionController {
         }
     }
 
+
+    @Operation(
+            summary = "Выгрузка транзакций в файл",
+            description = "Выгрузка транзакций из базы в файл, разделитель '|' "
+    )
     @GetMapping("/byMonth/{month}")
     public ResponseEntity<Object> getTransactionByMonth(@PathVariable Month month) {
         try {
