@@ -66,8 +66,9 @@ public class BudgetServiceImpl implements BudgetService {
                 new LinkedHashMap<>());
         monthTransactions.put(lastId, transaction);
         transactions.put(LocalDate.now().getMonth(), monthTransactions);
+        lastId++;
         saveToFile();
-        return lastId++;
+        return lastId;
     }
 
     @Override
@@ -157,7 +158,7 @@ public class BudgetServiceImpl implements BudgetService {
 
     private void saveToFile() {
         try {
-            DataFile dataFile = new DataFile(lastId, transactions);
+            DataFile dataFile = new DataFile(lastId+1, transactions);
             String s = new ObjectMapper().writeValueAsString(dataFile);
             filesService.saveToFile(s);
         } catch (JsonProcessingException e) {
