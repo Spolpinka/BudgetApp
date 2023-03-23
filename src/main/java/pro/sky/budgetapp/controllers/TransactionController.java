@@ -74,7 +74,7 @@ public class TransactionController {
             return ResponseEntity
                     .ok()
                     .contentType(MediaType.TEXT_PLAIN)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + month + "-report.txt\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"All-" + month + "-report.txt\"")
                     .contentLength(Files.size(path))
                     .body(resource);
 
