@@ -15,7 +15,7 @@ public class BudgetController {
         this.budgetService = budgetService;
     }
 
-    @GetMapping("/daily")
+    @GetMapping("/dailyBudget")
     public int dailyBudget() {
         return budgetService.getDailyBudget();
     }
