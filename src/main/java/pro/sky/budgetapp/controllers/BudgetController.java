@@ -20,7 +20,7 @@ public class BudgetController {
         return budgetService.getDailyBudget();
     }
 
-    @GetMapping("/balance")
+    @GetMapping("/balanceActual")
     public int balance() {
         return budgetService.getBalance();
     }
