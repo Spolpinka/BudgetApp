@@ -170,7 +170,7 @@ public class BudgetServiceImpl implements BudgetService {
         try {
             String json = filesService.readFromFile();
             DataFile dataFile = new ObjectMapper().readValue(filesService.readFromFile(),
-                    new TypeReference<DataFile>() {
+                    new TypeReference<>() {
                     });
             lastId = dataFile.lastId;
             transactions = dataFile.transactions;
